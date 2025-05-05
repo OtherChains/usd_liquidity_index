@@ -1,0 +1,4 @@
+pandas
+fredapi             # FRED wrapper :contentReference[oaicite:0]{index=0}
+notion-client       # official Notion SDK
+python-dotenv       # local testing convenience
