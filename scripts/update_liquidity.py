@@ -10,7 +10,9 @@ FRED_KEY  = os.environ["FRED_API_KEY"]
 NOTION_DB = os.environ["NOTION_DB_ID"]
 NOTION_TK = os.environ["NOTION_TOKEN"]
 
-
+root = Path(__file__).resolve().parents[1]          # repo root
+csv_path = root / "data" / "liquidity_history.csv"  # <-- DEFINED HERE
+csv_path.parent.mkdir(exist_ok=True)   
 cols = ["Date", "WALCL", "ON_RRP", "TGA", "Net_Liquidity"]
 
 try:
