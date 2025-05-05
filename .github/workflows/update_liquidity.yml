@@ -1,8 +1,12 @@
 name: update-liquidity
+
+permissions:
+  contents: write   # allow commit & push
+  pull-requests: write  # (optional) if you ever open PRs
+
 on:
   schedule:
-    # 11:30 UTC = 07:30 New York; WALCL & WTREGEN post Thu eve, RRP posts daily ~21:30 ET
-    - cron:  '30 11 * * 1-5'
+    - cron: '30 11 * * 1-5'
   workflow_dispatch:     # run manually when needed
 
 jobs:
