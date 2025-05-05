@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os, datetime as dt, pandas as pd
+from pandas.errors import EmptyDataError          # ← import
 from pathlib import Path
 from fredapi import Fred
 from notion_client import Client
@@ -8,6 +9,14 @@ from notion_client import Client
 FRED_KEY  = os.environ["FRED_API_KEY"]
 NOTION_DB = os.environ["NOTION_DB_ID"]
 NOTION_TK = os.environ["NOTION_TOKEN"]
+
+
+cols = ["Date", "WALCL", "ON_RRP", "TGA", "Net_Liquidity"]
+
+try:
+    df = pd.read_csv(csv_path)
+except (FileNotFoundError, EmptyDataError):
+    df = pd.DataFrame(columns=cols)
 
 # ---------- paths ----------
 root = Path(__file__).resolve().parents[1]
