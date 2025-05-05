@@ -1,0 +1,33 @@
+name: update-liquidity
+on:
+  schedule:
+    # 11:30 UTC = 07:30 New York; WALCL & WTREGEN post Thu eve, RRP posts daily ~21:30 ET
+    - cron:  '30 11 * * 1-5'
+  workflow_dispatch:     # run manually when needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Run update script
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DB_ID: ${{ secrets.NOTION_DB_ID }}
+        run: python scripts/update_liquidity.py
+
+      - name: Commit & push CSV
+        run: |
+          git config --global user.email "bot@github.com"
+          git config --global user.name  "Liquidity‑Bot"
+          git add data/liquidity_history.csv
+          git commit -m "Auto‑update $(date -u +'%Y-%m-%d')" || echo "No changes"
+          git push
