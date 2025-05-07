@@ -1,0 +1,30 @@
+# .github/workflows/backfill_liquidity.yml
+name: backfill-liquidity
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -r requirements.txt
+      - name: Run back‑fill script
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DB_ID: ${{ secrets.NOTION_DB_ID }}
+        run: python scripts/backfill_liquidity.py
+      - name: Commit & push CSV
+        run: |
+          git config --global user.email "bot@github.com"
+          git config --global user.name  "Liquidity‑Bot"
+          git add data/liquidity_history.csv
+          git commit -m "Back‑fill liquidity history" || echo "No changes"
+          git push
